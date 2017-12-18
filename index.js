@@ -202,7 +202,8 @@ exports.install = function(cwd = process.cwd()) {
   function removePath(file) {
     const dir = path.dirname(file)
     const names = dirs[dir] || createDir(dir)
-    names.splice(names.indexOf(path.basename(file)), 1)
+    const index = names.indexOf(path.basename(file))
+    if (index != -1) names.splice(index, 1)
   }
 
   // NOTE: This function assumes `path` does not exist in `dirs` yet.
