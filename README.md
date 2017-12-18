@@ -1,5 +1,5 @@
 
-# fsx-mock v0.0.1
+# fsx-mock v0.1.0
 
 This library provides an in-memory layer on top of an actual
 filesystem. The methods of [`fsx`](https://github.com/aleclarson/fsx)
@@ -30,9 +30,12 @@ fs.writeFile('foo', 'hello world')
 // This will equal true.
 fs.readFile('/path/to/cwd/foo') == 'hello world'
 
-// Revert all changes.
-fs.reset()
+// Revert changes to 'foo'
+fs.reset('foo')
 
 // This will now throw an error.
 fs.readFile('foo')
+
+// Revert all changes to the filesystem.
+fs.reset()
 ```

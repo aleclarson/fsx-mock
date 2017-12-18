@@ -1,6 +1,6 @@
 {
   "name": "fsx-mock",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "dependencies": {
     "fsx": "aleclarson/fsx#1.6.0"
   }
