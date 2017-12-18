@@ -30,7 +30,23 @@ exports.install = function(cwd = process.cwd()) {
   dirs[cwd] = readDir(cwd)
 
   // Revert any changes.
-  fs.reset = () => exports.install(cwd)
+  fs.reset = (name) => {
+    if (typeof name == 'string') {
+      const file = getPath(name)
+      const names = dirs[file]
+      if (names) {
+        names.forEach(name => {
+          fs.reset(path.join(file, name))
+        })
+        delete dirs[file]
+      } else {
+        delete files[file]
+        delete deleted[file]
+      }
+    } else {
+      exports.install(cwd)
+    }
+  }
 
   fs.isDir = (name) => {
     const dir = getPath(name)
