@@ -114,7 +114,11 @@ exports.install = function(cwd = process.cwd()) {
     if (deleted[file]) {
       uhoh(`Cannot use \`readFile\` on a non-existent path: '${name}'`, 'FILE_NOT_FOUND')
     }
-    return files[file] || readFile(file)
+    const content = files[file]
+    if (typeof content == 'string') {
+      return content
+    }
+    return readFile(file)
   }
 
   fs.writeFile = (name, content) => {
