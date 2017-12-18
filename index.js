@@ -177,6 +177,10 @@ exports.install = function(cwd = process.cwd()) {
     return isMocked(file) ? name : readLinks(file)
   }
 
+  unimplemented.forEach(method => {
+    fs[method] = () => { throw Error('Not implemented') }
+  })
+
   return fs
 
   function isMocked(path) {
