@@ -3,7 +3,12 @@ const path = require('path')
 const fs = require('fsx')
 
 // The mock will use the actual method if necessary.
-const {exists, isFile, readFile, isDir, readDir, readLinks} = fs
+const {
+  exists,
+  isDir, readDir,
+  isFile, readFile,
+  isLink, readLinks,
+} = fs
 
 // TODO: Implement these when they're needed.
 const unimplemented = [
