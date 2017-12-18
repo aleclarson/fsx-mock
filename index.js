@@ -129,7 +129,7 @@ exports.install = function(cwd = process.cwd()) {
     if (typeof files[file] != 'string') {
       addPath(file)
     }
-    files[file] = content || ''
+    files[file] = String(content)
   }
 
   fs.append = (name, content) => {
