@@ -7,12 +7,12 @@ const {
   exists,
   isDir, readDir,
   isFile, readFile,
-  isLink, readLinks,
+  isLink, readLink, readLinks,
 } = fs
 
 // TODO: Implement these when they're needed.
 const unimplemented = [
-  'exists', 'readLink', 'writeLink', 'rename', 'copy', 'watch'
+  'exists', 'writeLink', 'rename', 'copy', 'watch'
 ]
 
 exports.install = function(cwd = process.cwd()) {
@@ -143,6 +143,12 @@ exports.install = function(cwd = process.cwd()) {
     const file = getPath(name)
     if (deleted[file]) return false
     return isMocked(file) ? false : isLink(file)
+  }
+
+  fs.readLink = (name) => {
+    const file = getPath(name)
+    if (deleted[file]) return name
+    return isMocked(file) ? name : readLink(file)
   }
 
   fs.readLinks = (name) => {
