@@ -15,6 +15,8 @@ const unimplemented = [
   'exists', 'writeLink', 'rename', 'copy', 'watch'
 ]
 
+const hasOwn = Function.call.bind(Object.hasOwnProperty)
+
 exports.install = function(cwd = process.cwd()) {
 
   // Flat map of dirs to file names
@@ -32,17 +34,7 @@ exports.install = function(cwd = process.cwd()) {
   // Revert any changes.
   fs.reset = (name) => {
     if (typeof name == 'string') {
-      const file = getPath(name)
-      const names = dirs[file]
-      if (names) {
-        names.forEach(name => {
-          fs.reset(path.join(file, name))
-        })
-        delete dirs[file]
-      } else {
-        delete files[file]
-        delete deleted[file]
-      }
+      resetPath(getPath(name))
     } else {
       exports.install(cwd)
     }
@@ -197,6 +189,7 @@ exports.install = function(cwd = process.cwd()) {
     const names = dirs[dir] || createDir(dir)
     const name = file.slice(dir.length + 1)
     if (names.indexOf(name) == -1) {
+      // TODO: Keep children sorted by name.
       names.push(name)
       delete deleted[file]
     }
@@ -208,6 +201,45 @@ exports.install = function(cwd = process.cwd()) {
     const names = dirs[dir] || createDir(dir)
     const index = names.indexOf(path.basename(file))
     if (index != -1) names.splice(index, 1)
+  }
+
+  function resetPath(file) {
+    const parent = path.dirname(file)
+    const siblings = dirs[parent]
+
+    if (hasOwn(deleted, file)) {
+      // TODO: Keep children sorted by name.
+      if (siblings) siblings.push(path.basename(file))
+      delete deleted[file]
+    }
+    else {
+      const children = dirs[file]
+      if (children) {
+        delete dirs[file]
+        children.forEach(name => {
+          resetPath(path.join(file, name))
+        })
+      }
+      else if (hasOwn(files, file)) {
+        delete files[file]
+      }
+      else {
+        return // The given path is not mocked.
+      }
+
+      // Remove from parent's children if not a real file.
+      if (siblings && !exists(file)) {
+        const name = path.basename(file)
+        siblings.splice(siblings.indexOf(name), 1)
+      }
+    }
+
+    // Reset all real files within a real directory.
+    if (isDir(file)) {
+      readDir(file).forEach(name => {
+        resetPath(path.join(file, name))
+      })
+    }
   }
 
   // NOTE: This function assumes `path` does not exist in `dirs` yet.
