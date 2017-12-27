@@ -253,7 +253,9 @@ exports.install = function(cwd = process.cwd()) {
     } else {
       names = []
     }
-    addPath(dir)
+    if (dir != path.dirname(dir)) {
+      addPath(dir)
+    }
     dirs[dir] = names
     return names
   }
