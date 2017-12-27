@@ -245,7 +245,7 @@ exports.install = function(cwd = process.cwd()) {
   // NOTE: This function assumes `path` does not exist in `dirs` yet.
   function createDir(dir) {
     let names
-    if (exists(dir)) {
+    if (isDescendant(dir, cwd) && exists(dir)) {
       names = readDir(dir).filter(name => {
         const file = path.join(dir, name)
         return !deleted[file]
@@ -257,6 +257,10 @@ exports.install = function(cwd = process.cwd()) {
     dirs[dir] = names
     return names
   }
+}
+
+function isDescendant(dir, root) {
+  return !path.relative(root, dir).startsWith('..')
 }
 
 function uhoh(msg, code) {
