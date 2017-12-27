@@ -1,5 +1,5 @@
 
-# fsx-mock v0.1.1
+# fsx-mock v0.2.0
 
 This library provides an in-memory layer on top of an actual
 filesystem. The methods of [`fsx`](https://github.com/aleclarson/fsx)
